@@ -3,8 +3,10 @@ const PushDeer = require("push-all-in-one").PushDeer;
 const axios = require("axios").default;
 // get logged in cookie
 const cookie = process.env.COOKIE;
-const date_ob = new Date();
-const today = date_ob.getDate();
+// make sure date sync with CST
+const local_date_string  = new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" });
+const local_date_obj = new Date(local_date_string);
+const today = local_date_obj.getDate();
 const pushdeer = new PushDeer(process.env.PUSH_DEER_KEY);
 // const headers = {
 //     accept: "application/json, text/plain, */*",
@@ -110,6 +112,7 @@ const sign = async () => {
     //         console.log(res.status);
     //         console.log(res.data);
     //     });
+    return 
 }
 )();
 

@@ -55,36 +55,44 @@ const sign = async () => {
 };
 
 (async () => {
-    const result = await sign();
-    console.log(result);
-    pushdeer.send(`
-## [华住签到]:${result.success?"成功":"失败"}  
+    sign().then((result) => {
+        pushdeer.send(
+            `
+## [华住签到]:${result.success ? "成功" : "失败"}  
 
-积分：${result.point}  
+积分：${result.point}
 
-之前已经签到：${result.isSign}  
+之前${result.isSign ? "已" : "未"}签到  
 
-    `, "markdown");
+    `,
+            "markdown"
+        );
+    }).catch((err)=>{
+        pushdeer.send(`
+## [华住签到]: 错误发生
+
+log:  
+
+${err}`);
+    });
 })();
 
+//TODO dunno why this won't work but will figure it out
+// axios
+//     .post(
+//         "https://hweb-mbf.huazhu.com/api/signIn",
+//         {
+//             state: 1,
+//             day: 11,
+//         },
+//         { headers: headers }
+//     )
+//     .then((res) => {
+//         console.log(res.status);
+//         console.log(res.data);
+//     });
 
-    //TODO dunno why this won't work but will figure it out
-    // axios
-    //     .post(
-    //         "https://hweb-mbf.huazhu.com/api/signIn",
-    //         {
-    //             state: 1,
-    //             day: 11,
-    //         },
-    //         { headers: headers }
-    //     )
-    //     .then((res) => {
-    //         console.log(res.status);
-    //         console.log(res.data);
-    //     });
-
-
-                /*
+/*
                 payload: state=1&day=11
                 response:
                     content: {

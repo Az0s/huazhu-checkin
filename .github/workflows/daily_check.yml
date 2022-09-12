@@ -5,9 +5,9 @@ on:
   workflow_dispatch: 
     # 可以进行配置手动触发后有选项进行触发
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   # schedule 事件允许您在计划的时间触发工作流程
   schedule:
     # 设置 UTC 时间每天 16:00 自动触发即中国 0:00，github有误差大概在 0:10 左右触发;有需要可以自行更改此文件调整时间

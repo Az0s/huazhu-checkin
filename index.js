@@ -43,7 +43,7 @@ const sign = async () => {
         })
             .then((ret) => ret.json())
             .then((res) => {
-                if (res.status == 401) {
+                if (res.suceess === undefined) {
                     reject(res);
                 }
                 else{
@@ -66,7 +66,7 @@ const sign = async () => {
             .then((result) => {
                 pushdeer.send(
                     `
-    ## [华住签到]:${result.success ? "成功" : "失败"}
+    ## [华住签到]:${result.success|| result.isSign ? "成功" : "失败"}
     积分：${result.point}
     之前${result.isSign ? "已" : "未"}签到
         `,

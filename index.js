@@ -4,7 +4,9 @@ const axios = require("axios").default;
 // get logged in cookie
 const cookie = process.env.COOKIE;
 // make sure date sync with CST
-const local_date_string  = new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" });
+const local_date_string = new Date().toLocaleString("en-US", {
+    timeZone: "Asia/Shanghai",
+});
 const local_date_obj = new Date(local_date_string);
 const today = local_date_obj.getDate();
 const pushdeer = new PushDeer(process.env.PUSH_DEER_KEY);
@@ -34,7 +36,7 @@ const sign = async () => {
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-site",
                 "user-token": "null",
-                cookie: cookie,
+                cookie: '',
                 Referer: "https://campaign.huazhu.com/",
                 "Referrer-Policy": "strict-origin-when-cross-origin",
             },
@@ -43,10 +45,9 @@ const sign = async () => {
         })
             .then((ret) => ret.json())
             .then((res) => {
-                if (res.content.suceess === undefined) {
+                if (res.hasOwnProperty("error")) {
                     reject(res);
-                }
-                else{
+                } else {
                     const feedback = {
                         success: res.content.success,
                         point: res.content.point,
@@ -62,27 +63,30 @@ const sign = async () => {
 };
 
 (async () => {
-        sign()
-            .then((result) => {
-                pushdeer.send(
-                    `
-    ## [华住签到]:${result.success|| result.isSign ? "成功" : "失败"}
-    积分：${result.point}
-    之前${result.isSign ? "已" : "未"}签到
-        `,
-                    "markdown"
-                );
-            })
-            .catch((err) => {
-                let errMsg = JSON.stringify(err);
-                if (err.error === "Unauthorized"){
-                    errMsg="Authorize failed. \n It's likely that the cookie has expired."
-                }
-                    pushdeer.send(`
-    ## [华住签到]: 错误发生
-    log:
-    ${errMsg}`);
-            });
+    sign()
+        .then(async (result) => {
+            const successMsg = `
+## [华住签到]:${result.success || result.isSign ? "成功" : "失败"}
+积分：${result.point}
+之前${result.isSign ? "已" : "未"}签到
+    `;
+            console.log(successMsg);
+            await pushdeer.send(successMsg, "markdown");
+        })
+        .catch(async (err) => {
+            let errMsg = JSON.stringify(err);
+            if (err.error === "Unauthorized") {
+                errMsg =
+                    "Authorize failed. \n It's likely that the cookie has expired.";
+            }
+            const failMsg = `
+## [华住签到]: 错误发生
+log:
+${errMsg}`;
+            console.log(failMsg)
+            await pushdeer.send(failMsg, "markdown");
+            throw new Error(failMsg)
+        });
 
     // TODO dunno why this won't work but will figure it out
     // axios
@@ -112,11 +116,8 @@ const sign = async () => {
     //         console.log(res.status);
     //         console.log(res.data);
     //     });
-    return 
-}
-)();
-
-
+    return;
+})();
 
 /*
                 payload: state=1&day=11

@@ -36,7 +36,7 @@ const sign = async () => {
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-site",
                 "user-token": "null",
-                cookie: '',
+                cookie: cookie,
                 Referer: "https://campaign.huazhu.com/",
                 "Referrer-Policy": "strict-origin-when-cross-origin",
             },

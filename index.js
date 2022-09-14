@@ -43,7 +43,7 @@ const sign = async () => {
         })
             .then((ret) => ret.json())
             .then((res) => {
-                if (res.suceess === undefined) {
+                if (res.content.suceess === undefined) {
                     reject(res);
                 }
                 else{

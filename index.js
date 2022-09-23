@@ -66,12 +66,17 @@ const sign = async () => {
     sign()
         .then(async (result) => {
             const successMsg = `
-## [华住签到]:${result.success || result.isSign ? "成功" : "失败"}
-积分：${result.point}
-之前${result.isSign ? "已" : "未"}签到
+## [华住签到]:${result.success || result.isSign ? "成功" : "失败"}  
+${local_date_string}  
+积分：${result.point}    
     `;
-            console.log(successMsg);
-            await pushdeer.send(successMsg, "markdown");
+            if (result.isSign === false) {
+                console.log(successMsg);
+                await pushdeer.send(successMsg, "markdown");
+            } else {
+                //already signed
+                console.log(successMsg);
+            }
         })
         .catch(async (err) => {
             let errMsg = JSON.stringify(err);
@@ -83,9 +88,9 @@ const sign = async () => {
 ## [华住签到]: 错误发生
 log:
 ${errMsg}`;
-            console.log(failMsg)
+            console.log(failMsg);
             await pushdeer.send(failMsg, "markdown");
-            throw new Error(failMsg)
+            throw new Error(failMsg);
         });
 
     // TODO dunno why this won't work but will figure it out
